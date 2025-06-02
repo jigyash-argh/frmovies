@@ -1,68 +1,123 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-const MovieCard = ({
-  title,
-  poster = "https://via.placeholder.com/300x400?text=No+Image",
-  year,
-  genre,
-  director,
-  actors,
-  plot,
-}) => {
-  const [details, setdetails] = useState(false);
-  const [hovervisible, sethovervisible] = useState(false);
+interface Movie {
+  title: string;
+  poster?: string;
+  year?: string;
+  genre?: string;
+  director?: string;
+  actors?: string;
+  plot?: string;
+}
+
+interface MovieCardProps {
+  movie: Movie;
+}
+
+const MovieCard = (props: MovieCardProps) => {
+  const { movie } = props;
+  // Default poster value if not provided
+  const poster = movie.poster || "https://via.placeholder.com/300x400?text=No+Image";
+  const [details, setDetails] = useState(false);
+  const [hoverVisible, setHoverVisible] = useState(false);
 
   return (
-    <div
-      className={`rounded-lg shadow-lg p-2 flex flex-col m-5 items-center w-80 transition-all duration-300
-        ${hovervisible ? "bg-transparent" : "bg-transparent"}`}
-      onMouseEnter={() => sethovervisible(true)}
+    <motion.div
+      className="rounded-lg shadow-lg p-2 flex flex-col m-5 items-center w-80"
+      initial={{ scale: 1 }}
+      whileHover={{ scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      onMouseEnter={() => setHoverVisible(true)}
       onMouseLeave={() => {
-        sethovervisible(false);
-        setdetails(false);
+        setHoverVisible(false);
+        setDetails(false);
       }}
     >
-      <div className="relative w-full h-96">
+      <motion.div className="relative w-full h-96 overflow-hidden rounded-md">
         {/* Movie Image */}
-        <img
+        <motion.img
           src={poster}
-          alt={title}
-          className={`w-full h-96 object-cover rounded-md transition-all duration-300 ${
-            hovervisible ? "blur-sm brightness-75 scale-105" : ""
-          }`}
+          alt={movie.title}
+          className="w-full h-96 object-cover rounded-md"
+          animate={{
+            filter: hoverVisible ? "blur(4px) brightness(0.75)" : "blur(0px) brightness(1)",
+            scale: hoverVisible ? 1.05 : 1
+          }}
+          transition={{ type: "tween", ease: "easeOut", duration: 0.4 }}
         />
         {/* Blurred overlay BELOW the details */}
-        {hovervisible && (
-          <div className="absolute inset-0 rounded-md bg-black/30 backdrop-blur-sm pointer-events-none z-0" />
-        )}
+        <AnimatePresence>
+          {hoverVisible && (
+            <motion.div 
+              className="absolute inset-0 rounded-md bg-black/30 backdrop-blur-sm pointer-events-none z-0"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            />
+          )}
+        </AnimatePresence>
         {/* Overlay Content */}
-        {hovervisible && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center px-4 py-2 rounded-md transition-all duration-300 z-10 overflow-y-auto max-h-full">
-            <h2 className="text-2xl font-bold text-white mb-2 text-center drop-shadow">
-              {title}
-            </h2>
-            {year && (
-              <p className="text-gray-200 mb-1">
-                <span className="font-semibold">Year:</span> {year}
-              </p>
+        <AnimatePresence>
+          {hoverVisible && (
+            <motion.div 
+              className="absolute inset-0 flex flex-col items-center justify-center px-4 py-2 rounded-md z-10 overflow-y-auto max-h-full"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+            <motion.h2 
+              className="text-2xl font-bold text-white mb-2 text-center drop-shadow"
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+            >
+              {movie.title}
+            </motion.h2>
+            {movie.year && (
+              <motion.p 
+                className="text-gray-200 mb-1"
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.3, delay: 0.15 }}
+              >
+                <span className="font-semibold">Year:</span> {movie.year}
+              </motion.p>
             )}
-            {genre && (
-              <p className="text-gray-200 mb-1">
-                <span className="font-semibold">Genre:</span> {genre}
-              </p>
+            {movie.genre && (
+              <motion.p 
+                className="text-gray-200 mb-1"
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+              >
+                <span className="font-semibold">Genre:</span> {movie.genre}
+              </motion.p>
             )}
-            <button
-              className="hover:text-red-600 text-xl hover:border-red-500 hover:bg-white text-white border border-gray-400 px-4 py-2 rounded mb-2 mt-2 transition"
-              onClick={() => setdetails((prev) => !prev)}
+            <motion.button
+              className="hover:text-red-600 text-xl hover:border-red-500 hover:bg-white text-white border border-gray-400 px-4 py-2 rounded mb-2 mt-2"
+              onClick={() => setDetails((prev) => !prev)}
+              initial={{ y: 10, opacity: 0, scale: 0.95 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3, delay: 0.25 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               About
-            </button>
-            <button
-              className="flex items-center justify-center rounded-full border border-gray-400 w-16 h-16 mb-2 mt-2 text-white bg-gradient-to-r from-red-600 to-red-400 hover:from-white hover:to-white hover:text-red-600 hover:border-red-500 active:scale-110 transition"
+            </motion.button>
+            <motion.button
+              className="flex items-center justify-center rounded-full border border-gray-400 w-16 h-16 mb-2 mt-2 text-white bg-gradient-to-r from-red-600 to-red-400 hover:from-white hover:to-white hover:text-red-600 hover:border-red-500"
               onClick={() => {
                 /* Add play functionality here */
               }}
               aria-label="Play"
+              initial={{ y: 10, opacity: 0, scale: 0.95 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3, delay: 0.3, type: "spring" }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -79,30 +134,54 @@ const MovieCard = ({
                 />
                 <path d="M9 7v10l8-5-8-5z" fill="white" />
               </svg>
-            </button>
-            {details && (
-              <div className="w-full flex flex-col items-start mt-2 overflow-y-auto max-h-40">
-                {director && (
-                  <p className="text-gray-300 mb-1 break-words text-left">
-                    <span className="font-semibold">Director:</span> {director}
-                  </p>
-                )}
-                {actors && (
-                  <p className="text-gray-300 mb-1 break-words text-left">
-                    <span className="font-semibold">Actors:</span> {actors}
-                  </p>
-                )}
-                {plot && (
-                  <p className="text-gray-400 text-sm mt-2 break-words text-left">
-                    {plot}
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+            </motion.button>
+            <AnimatePresence>
+              {details && (
+                <motion.div 
+                  className="w-full flex flex-col items-start mt-2 overflow-y-auto max-h-40"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  {movie.director && (
+                    <motion.p 
+                      className="text-gray-300 mb-1 break-words text-left"
+                      initial={{ x: -10, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ duration: 0.3, delay: 0.1 }}
+                    >
+                      <span className="font-semibold">Director:</span> {movie.director}
+                    </motion.p>
+                  )}
+                  {movie.actors && (
+                    <motion.p 
+                      className="text-gray-300 mb-1 break-words text-left"
+                      initial={{ x: -10, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ duration: 0.3, delay: 0.2 }}
+                    >
+                      <span className="font-semibold">Actors:</span> {movie.actors}
+                    </motion.p>
+                  )}
+                  {movie.plot && (
+                    <motion.p 
+                      className="text-gray-400 text-sm mt-2 break-words text-left"
+                      initial={{ x: -10, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ duration: 0.3, delay: 0.3 }}
+                    >
+                      {movie.plot}
+                    </motion.p>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </motion.div>
   );
 };
 

@@ -93,7 +93,7 @@ const Nav = () => {
       {/* Mobile Menu (shows nav links only) */}
       {menuOpen && (
         <div
-          className={`lg:hidden fixed top-25 right-0 h-full w-1/3 bg-black border-l-4 border-red-600 shadow-lg z-40 flex flex-col items-start pt-8 px-6
+          className={`lg:hidden fixed top-20 right-0 h-full w-1/3 bg-black border-l-4 border-red-600 shadow-lg z-40 flex flex-col items-start pt-8 px-6
       transition-transform duration-300 ease-in-out
       ${menuOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}
     `}
