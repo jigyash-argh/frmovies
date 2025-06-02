@@ -15,8 +15,15 @@ const App = () => {
   return (
     <div className="min-h-screen w-full bg-black text-white">
       <Nav />
-      <h1>Featured</h1>
-      <PopularMoviesCard />
+      <PopularMoviesCard
+        title="REACHER"
+        languages="English | Hindi | Tamil | Telugu | Malayalam | Kannada"
+        episodeInfo="NEW EPISODE EVERY THURSDAY"
+        description='Based on Lee Child novel "Persuader", Reacher hurtles into the dark heart of a vast criminal enterprise when trying to rescue an undercover DEA informant whose ti...'
+        image="https://m.media-amazon.com/images/I/51zUbui+gbL._AC_.jpg"
+        ctaLabel="Watch Now"
+        ageRating="U/A 18+"
+      />
       <MovieCard {...movie} />
     </div>
   );
