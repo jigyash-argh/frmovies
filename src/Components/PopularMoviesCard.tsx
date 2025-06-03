@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Movie {
@@ -11,12 +10,11 @@ interface Movie {
 }
 
 interface PopularMoviesCardProps {
-  movies: Movie[];
+  movie: Movie;
   ctaLabel?: string;
 }
 
-const PopularMoviesCard = ({ movies = [], ctaLabel = "Watch Now" }: PopularMoviesCardProps) => {
-  const [currentMovieIndex, setCurrentMovieIndex] = useState(0);
+const PopularMoviesCard = ({ movie, ctaLabel = "Watch Now" }: PopularMoviesCardProps) => {
   const {
     title,
     languages,
@@ -24,21 +22,11 @@ const PopularMoviesCard = ({ movies = [], ctaLabel = "Watch Now" }: PopularMovie
     plot: description,
     poster: image,
     ageRating,
-  } = movies[currentMovieIndex] || {};
+  } = movie || {};
 
-  const goToNextMovie = () => {
-    setCurrentMovieIndex((prevIndex) =>
-      prevIndex === movies.length - 1 ? 0 : prevIndex + 1
-    );
-  };
-
-  const goToPrevMovie = () => {
-    setCurrentMovieIndex((prevIndex) =>
-      prevIndex === 0 ? movies.length - 1 : prevIndex - 1
-    );
-  };
-
-  if (!movies.length) return null;
+  // Since we're now handling a single movie, we don't need these navigation functions
+  
+  if (!movie) return null;
 
   return (
     <motion.div 
@@ -51,7 +39,6 @@ const PopularMoviesCard = ({ movies = [], ctaLabel = "Watch Now" }: PopularMovie
       <AnimatePresence mode="wait">
         <motion.div 
           className="absolute inset-0"
-          key={currentMovieIndex}
           initial={{ opacity: 0, scale: 1.1 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
@@ -83,7 +70,6 @@ const PopularMoviesCard = ({ movies = [], ctaLabel = "Watch Now" }: PopularMovie
         <AnimatePresence mode="wait">
           <motion.div 
             className="max-w-2xl"
-            key={currentMovieIndex}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -176,82 +162,7 @@ const PopularMoviesCard = ({ movies = [], ctaLabel = "Watch Now" }: PopularMovie
         )}
       </AnimatePresence>
 
-      {/* Navigation - Only show if multiple movies */}
-      {movies.length > 1 && (
-        <>
-          <motion.button
-            onClick={goToPrevMovie}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100"
-            aria-label="Previous movie"
-            whileHover={{ scale: 1.1, backgroundColor: "rgba(0, 0, 0, 0.7)" }}
-            whileTap={{ scale: 0.9 }}
-            transition={{ duration: 0.2 }}
-          >
-            <svg
-              className="w-8 h-8"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </motion.button>
-          <motion.button
-            onClick={goToNextMovie}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100"
-            aria-label="Next movie"
-            whileHover={{ scale: 1.1, backgroundColor: "rgba(0, 0, 0, 0.7)" }}
-            whileTap={{ scale: 0.9 }}
-            transition={{ duration: 0.2 }}
-          >
-            <svg
-              className="w-8 h-8"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </motion.button>
-
-          <motion.div 
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            {movies.map((_, index) => (
-              <motion.button
-                key={index}
-                onClick={() => setCurrentMovieIndex(index)}
-                className={`h-3 rounded-full ${
-                  index === currentMovieIndex
-                    ? "bg-white"
-                    : "bg-gray-500 hover:bg-gray-300"
-                }`}
-                initial={false}
-                animate={{ 
-                  width: index === currentMovieIndex ? 24 : 12
-                }}
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.9 }}
-                transition={{ duration: 0.2 }}
-                aria-label={`Go to movie ${index + 1}`}
-              ></motion.button>
-            ))}
-          </motion.div>
-        </>
-      )}
+      {/* Navigation is removed since we're only showing one movie */}
     </motion.div>
   );
 };

@@ -108,7 +108,7 @@ const MovieCard = (props: MovieCardProps) => {
               About
             </motion.button>
             <motion.button
-              className="flex items-center justify-center rounded-full border border-gray-400 w-16 h-16 mb-2 mt-2 text-white bg-gradient-to-r from-red-600 to-red-400 hover:from-white hover:to-white hover:text-red-600 hover:border-red-500"
+              className="flex items-center justify-center rounded-full border border-gray-400 w-16 h-16 mb-2 mt-2 text-white bg-gray-500 hover:bg-transparent from-red-600 to-red-400 hover:from-white hover:to-white hover:text-red-600 hover:border-red-500"
               onClick={() => {
                 /* Add play functionality here */
               }}
